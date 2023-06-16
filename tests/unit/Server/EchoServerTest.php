@@ -2,12 +2,15 @@
 namespace Ratchet\Server;
 use Ratchet\Server\EchoServer;
 
-class EchoServerTest extends \PHPUnit_Framework_TestCase {
+/**
+ * @covers Ratchet\Server\EchoServer
+ */
+class EchoServerTest extends \PHPUnit\Framework\TestCase {
     protected $_conn;
     protected $_comp;
 
-    public function setUp() {
-        $this->_conn = $this->getMock('\Ratchet\ConnectionInterface');
+    public function setUp(): void {
+        $this->_conn = $this->createMock('\Ratchet\ConnectionInterface');
         $this->_comp = new EchoServer;
     }
 
