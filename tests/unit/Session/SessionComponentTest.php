@@ -79,7 +79,7 @@ class SessionProviderTest extends AbstractMessageComponentTestCase {
         $pdoHandler->write($sessionId, '_sf2_attributes|a:2:{s:5:"hello";s:5:"world";s:4:"last";i:1332872102;}_sf2_flashes|a:0:{}');
 
         $component  = new SessionProvider($this->createMock($this->getComponentClassString()), $pdoHandler, array('auto_start' => 1));
-        $connection = $this->createMock('Ratchet\\ConnectionInterface');
+        $connection = $this->createMock('Ratchet\Mock\Connection');
 
         $headers = $this->createMock('Psr\Http\Message\RequestInterface');
         $headers->expects($this->once())->method('getHeader')->will($this->returnValue([ini_get('session.name') . "={$sessionId};"]));
@@ -90,7 +90,7 @@ class SessionProviderTest extends AbstractMessageComponentTestCase {
     }
 
     protected function newConn() {
-        $conn = $this->createMock('Ratchet\ConnectionInterface');
+        $conn = $this->createMock('Ratchet\Mock\Connection');
 
         $headers = $this
             ->getMockBuilder('Psr\Http\Message\Request')

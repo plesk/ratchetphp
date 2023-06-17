@@ -43,13 +43,13 @@ class TopicTest extends \PHPUnit\Framework\TestCase {
         $first = $this
             ->getMockBuilder('Ratchet\\Wamp\\WampConnection')
             ->onlyMethods(['send'])
-            ->setConstructorArgs([$this->createMock('\\Ratchet\\ConnectionInterface')])
+            ->setConstructorArgs([$this->createMock('\\Ratchet\\Mock\\Connection')])
             ->getMock();
 
         $second = $this
             ->getMockBuilder('Ratchet\\Wamp\\WampConnection')
             ->onlyMethods(['send'])
-            ->setConstructorArgs([$this->createMock('\\Ratchet\\ConnectionInterface')])
+            ->setConstructorArgs([$this->createMock('\\Ratchet\\Mock\\Connection')])
             ->getMock();
 
         $first->expects($this->once())
@@ -75,19 +75,19 @@ class TopicTest extends \PHPUnit\Framework\TestCase {
         $first = $this
             ->getMockBuilder('Ratchet\\Wamp\\WampConnection')
             ->onlyMethods(['send'])
-            ->setConstructorArgs([$this->createMock('\\Ratchet\\ConnectionInterface')])
+            ->setConstructorArgs([$this->createMock('\\Ratchet\\Mock\\Connection')])
             ->getMock();
 
         $second = $this
             ->getMockBuilder('Ratchet\\Wamp\\WampConnection')
             ->onlyMethods(['send'])
-            ->setConstructorArgs([$this->createMock('\\Ratchet\\ConnectionInterface')])
+            ->setConstructorArgs([$this->createMock('\\Ratchet\\Mock\\Connection')])
             ->getMock();
 
         $third = $this
             ->getMockBuilder('Ratchet\\Wamp\\WampConnection')
             ->onlyMethods(['send'])
-            ->setConstructorArgs([$this->createMock('\\Ratchet\\ConnectionInterface')])
+            ->setConstructorArgs([$this->createMock('\\Ratchet\\Mock\\Connection')])
             ->getMock();
 
         $first->expects($this->once())
@@ -116,19 +116,19 @@ class TopicTest extends \PHPUnit\Framework\TestCase {
         $first = $this
             ->getMockBuilder('Ratchet\\Wamp\\WampConnection')
             ->onlyMethods(['send'])
-            ->setConstructorArgs([$this->createMock('\\Ratchet\\ConnectionInterface')])
+            ->setConstructorArgs([$this->createMock('\\Ratchet\\Mock\\Connection')])
             ->getMock();
 
         $second = $this
             ->getMockBuilder('Ratchet\\Wamp\\WampConnection')
             ->onlyMethods(['send'])
-            ->setConstructorArgs([$this->createMock('\\Ratchet\\ConnectionInterface')])
+            ->setConstructorArgs([$this->createMock('\\Ratchet\\Mock\\Connection')])
             ->getMock();
 
         $third = $this
             ->getMockBuilder('Ratchet\\Wamp\\WampConnection')
             ->onlyMethods(['send'])
-            ->setConstructorArgs([$this->createMock('\\Ratchet\\ConnectionInterface')])
+            ->setConstructorArgs([$this->createMock('\\Ratchet\\Mock\\Connection')])
             ->getMock();
 
         $first->expects($this->once())
@@ -196,6 +196,6 @@ class TopicTest extends \PHPUnit\Framework\TestCase {
     }
 
     protected function newConn() {
-        return new WampConnection($this->createMock('\\Ratchet\\ConnectionInterface'));
+        return new WampConnection($this->createMock('\\Ratchet\\Mock\\Connection'));
     }
 }

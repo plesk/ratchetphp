@@ -14,7 +14,7 @@ abstract class AbstractMessageComponentTestCase extends \PHPUnit\Framework\TestC
         $this->_app  = $this->createMock($this->getComponentClassString());
         $decorator   = $this->getDecoratorClassString();
         $this->_serv = new $decorator($this->_app);
-        $this->_conn = $this->createMock('\Ratchet\ConnectionInterface');
+        $this->_conn = $this->createMock('\Ratchet\Mock\Connection');
 
         $this->doOpen($this->_conn);
     }
@@ -29,7 +29,7 @@ abstract class AbstractMessageComponentTestCase extends \PHPUnit\Framework\TestC
 
     public function testOpen() {
         $this->_app->expects($this->once())->method('onOpen')->with($this->isExpectedConnection());
-        $this->doOpen($this->createMock('\Ratchet\ConnectionInterface'));
+        $this->doOpen($this->createMock('\Ratchet\Mock\Connection'));
     }
 
     public function testOnClose() {

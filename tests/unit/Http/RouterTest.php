@@ -19,7 +19,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase {
     protected $_req;
 
     public function setUp(): void {
-        $this->_conn = $this->createMock('\Ratchet\ConnectionInterface');
+        $this->_conn = $this->createMock('\Ratchet\Mock\Connection');
         $this->_uri = $this->createMock('Psr\Http\Message\UriInterface');
         $this->_uri
             ->expects($this->any())

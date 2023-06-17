@@ -9,7 +9,7 @@ class WampConnectionTest extends \PHPUnit\Framework\TestCase {
     protected $mock;
 
     public function setUp(): void {
-        $this->mock = $this->createMock('\\Ratchet\\ConnectionInterface');
+        $this->mock = $this->createMock('\Ratchet\Mock\Connection');
         $this->conn = new WampConnection($this->mock);
     }
 
@@ -67,7 +67,7 @@ class WampConnectionTest extends \PHPUnit\Framework\TestCase {
     }
 
     public function testClose() {
-        $mock = $this->createMock('\\Ratchet\\ConnectionInterface');
+        $mock = $this->createMock('\Ratchet\Mock\Connection');
         $conn = new WampConnection($mock);
 
         $mock->expects($this->once())->method('close');
