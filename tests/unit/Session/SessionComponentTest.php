@@ -11,18 +11,12 @@ use Symfony\Component\HttpFoundation\Session\Storage\Handler\NullSessionHandler;
  */
 class SessionProviderTest extends AbstractMessageComponentTestCase {
     public function setUp(): void {
-        $this->markTestIncomplete('Test needs to be updated for ini_set issue in PHP 7.2');
-
         if (!class_exists('Symfony\Component\HttpFoundation\Session\Session')) {
             $this->markTestSkipped('Dependency of Symfony HttpFoundation failed');
         }
 
         parent::setUp();
         $this->_serv = new SessionProvider($this->_app, new NullSessionHandler);
-    }
-
-    public function tearDown(): void {
-        ini_set('session.serialize_handler', 'php');
     }
 
     public function getConnectionClassString() {
@@ -112,19 +106,6 @@ class SessionProviderTest extends AbstractMessageComponentTestCase {
         $message = "Database calls are usually blocking  :(";
         $this->_app->expects($this->once())->method('onMessage')->with($this->isExpectedConnection(), $message);
         $this->_serv->onMessage($this->_conn, $message);
-    }
-
-    public function testRejectInvalidSeralizers() {
-        if (!function_exists('wddx_serialize_value')) {
-            $this->markTestSkipped();
-        }
-
-        ini_set('session.serialize_handler', 'wddx');
-        $this->expectException('\RuntimeException');
-        new SessionProvider(
-            $this->createMock($this->getComponentClassString()),
-            $this->createMock('\SessionHandlerInterface')
-        );
     }
 
     protected function doOpen($conn) {
