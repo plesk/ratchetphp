@@ -1,6 +1,5 @@
 <?php
 namespace Ratchet\Server;
-use Ratchet\Server\EchoServer;
 
 /**
  * @covers Ratchet\Server\EchoServer

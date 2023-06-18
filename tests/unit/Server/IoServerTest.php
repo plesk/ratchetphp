@@ -1,6 +1,5 @@
 <?php
 namespace Ratchet\Server;
-use Ratchet\Server\IoServer;
 use React\EventLoop\StreamSelectLoop;
 use React\EventLoop\LoopInterface;
 use React\Socket\Server;
