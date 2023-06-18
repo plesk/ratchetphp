@@ -42,9 +42,6 @@ class IoServerTest extends \PHPUnit\Framework\TestCase {
         $client = stream_socket_client("tcp://localhost:{$this->port}");
 
         $this->tickLoop($this->server->loop);
-
-        //$this->assertTrue(is_string($this->app->last['onOpen'][0]->remoteAddress));
-        //$this->assertTrue(is_int($this->app->last['onOpen'][0]->resourceId));
     }
 
     public function testOnData() {
@@ -111,18 +108,5 @@ class IoServerTest extends \PHPUnit\Framework\TestCase {
         $this->app->expects($this->once())->method('onError')->with($decor, $err);
 
         $this->server->handleError($err, $conn);
-    }
-
-    public function onErrorCalledWhenExceptionThrown() {
-        $this->markTestIncomplete("Need to learn how to throw an exception from a mock");
-
-        $conn = $this->createMock('\\React\\Socket\\ConnectionInterface');
-        $this->server->handleConnect($conn);
-
-        $e = new \Exception;
-        $this->app->expects($this->once())->method('onMessage')->with($this->isInstanceOf('\\Ratchet\\ConnectionInterface'), 'f')->will($e);
-        $this->app->expects($this->once())->method('onError')->with($this->instanceOf('\\Ratchet\\ConnectionInterface', $e));
-
-        $this->server->handleData('f', $conn);
     }
 }
