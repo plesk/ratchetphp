@@ -28,6 +28,8 @@ class IoServer {
      */
     public $socket;
 
+    private $decors = [];
+
     /**
      * @param \Ratchet\MessageComponentInterface  $app      The Ratchet application stack to host
      * @param \React\Socket\ServerInterface       $socket   The React socket server to run the Ratchet application off of
@@ -80,16 +82,17 @@ class IoServer {
      * @param \React\Socket\ConnectionInterface $conn
      */
     public function handleConnect($conn) {
-        $conn->decor = new IoConnection($conn);
-        $conn->decor->resourceId = (int)$conn->stream;
+        $decor = new IoConnection($conn);
+        $this->decors[spl_object_hash($conn)] = $decor;
+        $decor->resourceId = (int)$conn->stream;
 
         $uri = $conn->getRemoteAddress();
-        $conn->decor->remoteAddress = trim(
+        $decor->remoteAddress = trim(
             parse_url((strpos($uri, '://') === false ? 'tcp://' : '') . $uri, PHP_URL_HOST),
             '[]'
         );
 
-        $this->app->onOpen($conn->decor);
+        $this->app->onOpen($decor);
 
         $conn->on('data', function ($data) use ($conn) {
             $this->handleData($data, $conn);
@@ -109,7 +112,8 @@ class IoServer {
      */
     public function handleData($data, $conn) {
         try {
-            $this->app->onMessage($conn->decor, $data);
+            $decor = $this->decors[spl_object_hash($conn)];
+            $this->app->onMessage($decor, $data);
         } catch (\Exception $e) {
             $this->handleError($e, $conn);
         }
@@ -121,12 +125,13 @@ class IoServer {
      */
     public function handleEnd($conn) {
         try {
-            $this->app->onClose($conn->decor);
+            $decor = $this->decors[spl_object_hash($conn)];
+            $this->app->onClose($decor);
         } catch (\Exception $e) {
             $this->handleError($e, $conn);
         }
 
-        unset($conn->decor);
+        unset($this->decors[spl_object_hash($conn)]);
     }
 
     /**
@@ -135,6 +140,11 @@ class IoServer {
      * @param \React\Socket\ConnectionInterface $conn
      */
     public function handleError(\Exception $e, $conn) {
-        $this->app->onError($conn->decor, $e);
+        $decor = $this->decors[spl_object_hash($conn)];
+        $this->app->onError($decor, $e);
+    }
+
+    public function setDecor($conn, $decor): void {
+        $this->decors[spl_object_hash($conn)] = $decor;
     }
 }
