@@ -4,3 +4,4 @@ reports
 sandbox
 vendor
 composer.lock
+.python-version
