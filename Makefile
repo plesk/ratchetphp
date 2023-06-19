@@ -8,9 +8,9 @@ cover:
 	vendor/bin/phpunit --coverage-text --coverage-html=reports/coverage
 
 abtests:
-	ulimit -n 2048 && php tests/autobahn/bin/fuzzingserver.php 8001 LibEvent &
+	ulimit -n 2048 && php tests/autobahn/bin/fuzzingserver.php 8001 ExtEvent &
 	ulimit -n 2048 && php tests/autobahn/bin/fuzzingserver.php 8002 StreamSelect &
-	ulimit -n 2048 && php tests/autobahn/bin/fuzzingserver.php 8004 LibEv &
+	ulimit -n 2048 && php tests/autobahn/bin/fuzzingserver.php 8004 ExtEv &
 	wstest -m testeeserver -w ws://localhost:8000 &
 	sleep 1
 	wstest -m fuzzingclient -s tests/autobahn/fuzzingclient-all.json
