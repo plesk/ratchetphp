@@ -82,6 +82,6 @@ class MyChat implements MessageComponentInterface {
     conn.onopen = function(e) { conn.send('Hello Me!'); };
 ```
 
-[GA Image]: https://github.com/ratchetphp/Ratchet/workflows/CI/badge.svg
+[GA Image]: https://github.com/plesk/ratchetphp/workflows/CI/badge.svg
 
-[GA Link]: https://github.com/ratchetphp/Ratchet/actions?query=workflow%3A%22CI%22+branch%3Amaster
+[GA Link]: https://github.com/plesk/ratchetphp/actions?query=workflow%3A%22CI%22+branch%3Amaster
