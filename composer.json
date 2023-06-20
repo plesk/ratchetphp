@@ -36,9 +36,10 @@
     "ratchet/rfc6455": "^0.3.1",
     "react/socket": "^1.13.0",
     "react/event-loop": "^1.4.0",
-    "guzzlehttp/psr7": "^1.7|^2.0",
-    "symfony/http-foundation": "^2.6|^3.0|^4.0|^5.0|^6.0",
-    "symfony/routing": "^2.6|^3.0|^4.0|^5.0|^6.0"
+    "guzzlehttp/psr7": "^2.5.0",
+    "psr/http-message": "^2.0",
+    "symfony/http-foundation": "^5.4.24 || ^6.0",
+    "symfony/routing": "^5.4.22 || ^6.0"
   },
   "config": {
     "platform": {
@@ -46,7 +47,7 @@
     }
   },
   "require-dev": {
-    "phpunit/phpunit": "^9.6"
+    "phpunit/phpunit": "^9.6.9"
   },
   "scripts": {
     "test": "phpunit"
