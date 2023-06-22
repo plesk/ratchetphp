@@ -26,10 +26,6 @@
       "role": "Developer"
     }
   ],
-  "support": {
-    "issues": "https://github.com/ratchetphp/Ratchet/issues",
-    "chat": "https://gitter.im/reactphp/reactphp"
-  },
   "autoload": {
     "psr-4": {
       "Ratchet\\": "src/Ratchet"
