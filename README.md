@@ -1,6 +1,6 @@
 # Ratchet
 
-[![GitHub Actions][GA Image]][GA Link]
+[![GitHub Actions](https://github.com/plesk/ratchetphp/workflows/CI/badge.svg)](https://github.com/plesk/ratchetphp/actions?query=workflow%3A%22CI%22+branch%3Amaster)
 [![Latest Stable Version](https://poser.pugx.org/cboden/ratchet/v/stable.png)](https://packagist.org/packages/cboden/ratchet)
 
 A PHP library for asynchronously serving WebSockets.
@@ -80,7 +80,3 @@ class MyChat implements MessageComponentInterface {
     conn.onmessage = function(e) { console.log(e.data); };
     conn.onopen = function(e) { conn.send('Hello Me!'); };
 ```
-
-[GA Image]: https://github.com/plesk/ratchetphp/workflows/CI/badge.svg
-
-[GA Link]: https://github.com/plesk/ratchetphp/actions?query=workflow%3A%22CI%22+branch%3Amaster
