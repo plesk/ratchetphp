@@ -8,6 +8,10 @@ CHANGELOG
 
 ---
 
+* 1.0.0 (2023-06-22)
+  * BC: Minimum PHP version is now 8.0
+  * Add PHP 8.0, 8.1 and 8.2 support
+
 * 0.4.4 (2021-12-11)
   * Correct and update dependencies for forward compatibility
   * Added context for React Socket server to App
