@@ -1,5 +1,5 @@
 {
-  "name": "cboden/ratchet",
+  "name": "plesk/ratchetphp",
   "type": "library",
   "description": "PHP WebSocket library",
   "keywords": [
