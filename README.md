@@ -1,7 +1,7 @@
 # Ratchet
 
 [![GitHub Actions](https://github.com/plesk/ratchetphp/workflows/CI/badge.svg)](https://github.com/plesk/ratchetphp/actions?query=workflow%3A%22CI%22+branch%3Amaster)
-[![Latest Stable Version](https://poser.pugx.org/cboden/ratchet/v/stable.png)](https://packagist.org/packages/cboden/ratchet)
+[![Latest Stable Version](http://poser.pugx.org/plesk/ratchetphp/v)](https://packagist.org/packages/plesk/ratchetphp)
 
 A PHP library for asynchronously serving WebSockets.
 Build up your application through simple interfaces and re-use your application without changing any of its code just by combining different components.
