@@ -1,7 +1,6 @@
 # Ratchet
 
 [![GitHub Actions][GA Image]][GA Link]
-[![Autobahn Testsuite](https://img.shields.io/badge/Autobahn-passing-brightgreen.svg)](http://socketo.me/reports/ab/index.html)
 [![Latest Stable Version](https://poser.pugx.org/cboden/ratchet/v/stable.png)](https://packagist.org/packages/cboden/ratchet)
 
 A PHP library for asynchronously serving WebSockets.
