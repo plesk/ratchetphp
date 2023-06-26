@@ -1,18 +1,22 @@
 <?php
+
 namespace Ratchet\Wamp;
 
 /**
  * @covers Ratchet\Wamp\Topic
  */
-class TopicTest extends \PHPUnit\Framework\TestCase {
-    public function testGetId() {
+class TopicTest extends \PHPUnit\Framework\TestCase
+{
+    public function testGetId()
+    {
         $id    = uniqid();
         $topic = new Topic($id);
 
         $this->assertEquals($id, $topic->getId());
     }
 
-    public function testAddAndCount() {
+    public function testAddAndCount()
+    {
         $topic = new Topic('merp');
 
         $topic->add($this->newConn());
@@ -22,7 +26,8 @@ class TopicTest extends \PHPUnit\Framework\TestCase {
         $this->assertEquals(3, count($topic));
     }
 
-    public function testRemove() {
+    public function testRemove()
+    {
         $topic   = new Topic('boop');
         $tracked = $this->newConn();
 
@@ -35,7 +40,8 @@ class TopicTest extends \PHPUnit\Framework\TestCase {
         $this->assertEquals(2, count($topic));
     }
 
-    public function testBroadcast() {
+    public function testBroadcast()
+    {
         $msg  = 'Hello World!';
         $name = 'Batman';
         $protocol = json_encode(array(8, $name, $msg));
@@ -67,7 +73,8 @@ class TopicTest extends \PHPUnit\Framework\TestCase {
         $topic->broadcast($msg);
     }
 
-    public function testBroadcastWithExclude() {
+    public function testBroadcastWithExclude()
+    {
         $msg  = 'Hello odd numbers';
         $name = 'Excluding';
         $protocol = json_encode(array(8, $name, $msg));
@@ -108,7 +115,8 @@ class TopicTest extends \PHPUnit\Framework\TestCase {
         $topic->broadcast($msg, array($second->WAMP->sessionId));
     }
 
-    public function testBroadcastWithEligible() {
+    public function testBroadcastWithEligible()
+    {
         $msg  = 'Hello white list';
         $name = 'Eligible';
         $protocol = json_encode(array(8, $name, $msg));
@@ -149,7 +157,8 @@ class TopicTest extends \PHPUnit\Framework\TestCase {
         $topic->broadcast($msg, array(), array($first->WAMP->sessionId, $third->WAMP->sessionId));
     }
 
-    public function testIterator() {
+    public function testIterator()
+    {
         $first  = $this->newConn();
         $second = $this->newConn();
         $third  = $this->newConn();
@@ -164,14 +173,16 @@ class TopicTest extends \PHPUnit\Framework\TestCase {
         }
     }
 
-    public function testToString() {
+    public function testToString()
+    {
         $name  = 'Bane';
         $topic = new Topic($name);
 
         $this->assertEquals($name, (string)$topic);
     }
 
-    public function testDoesHave() {
+    public function testDoesHave()
+    {
         $conn  = $this->newConn();
         $topic = new Topic('Two Face');
         $topic->add($conn);
@@ -179,14 +190,16 @@ class TopicTest extends \PHPUnit\Framework\TestCase {
         $this->assertTrue($topic->has($conn));
     }
 
-    public function testDoesNotHave() {
+    public function testDoesNotHave()
+    {
         $conn  = $this->newConn();
         $topic = new Topic('Alfred');
 
         $this->assertFalse($topic->has($conn));
     }
 
-    public function testDoesNotHaveAfterRemove() {
+    public function testDoesNotHaveAfterRemove()
+    {
         $conn  = $this->newConn();
         $topic = new Topic('Ras');
 
@@ -195,7 +208,8 @@ class TopicTest extends \PHPUnit\Framework\TestCase {
         $this->assertFalse($topic->has($conn));
     }
 
-    protected function newConn() {
+    protected function newConn()
+    {
         return new WampConnection($this->createMock('\\Ratchet\\Mock\\Connection'));
     }
 }

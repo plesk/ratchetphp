@@ -1,19 +1,23 @@
 <?php
+
 namespace Ratchet\Wamp;
 
 /**
  * @covers Ratchet\Wamp\WampConnection
  */
-class WampConnectionTest extends \PHPUnit\Framework\TestCase {
+class WampConnectionTest extends \PHPUnit\Framework\TestCase
+{
     protected $conn;
     protected $mock;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         $this->mock = $this->createMock('\Ratchet\Mock\Connection');
         $this->conn = new WampConnection($this->mock);
     }
 
-    public function testCallResult() {
+    public function testCallResult()
+    {
         $callId = uniqid();
         $data   = array('hello' => 'world', 'herp' => 'derp');
 
@@ -22,7 +26,8 @@ class WampConnectionTest extends \PHPUnit\Framework\TestCase {
         $this->conn->callResult($callId, $data);
     }
 
-    public function testCallError() {
+    public function testCallError()
+    {
         $callId = uniqid();
         $uri    = 'http://example.com/end/point';
 
@@ -31,7 +36,8 @@ class WampConnectionTest extends \PHPUnit\Framework\TestCase {
         $this->conn->callError($callId, $uri);
     }
 
-    public function testCallErrorWithTopic() {
+    public function testCallErrorWithTopic()
+    {
         $callId = uniqid();
         $uri    = 'http://example.com/end/point';
 
@@ -40,7 +46,8 @@ class WampConnectionTest extends \PHPUnit\Framework\TestCase {
         $this->conn->callError($callId, new Topic($uri));
     }
 
-    public function testDetailedCallError() {
+    public function testDetailedCallError()
+    {
         $callId = uniqid();
         $uri    = 'http://example.com/end/point';
         $desc   = 'beep boop beep';
@@ -51,7 +58,8 @@ class WampConnectionTest extends \PHPUnit\Framework\TestCase {
         $this->conn->callError($callId, $uri, $desc, $detail);
     }
 
-    public function testPrefix() {
+    public function testPrefix()
+    {
         $shortOut = 'outgoing';
         $longOut  = 'http://example.com/outgoing';
 
@@ -60,13 +68,15 @@ class WampConnectionTest extends \PHPUnit\Framework\TestCase {
         $this->conn->prefix($shortOut, $longOut);
     }
 
-    public function testGetUriWhenNoCurieGiven() {
+    public function testGetUriWhenNoCurieGiven()
+    {
         $uri  = 'http://example.com/noshort';
 
         $this->assertEquals($uri, $this->conn->getUri($uri));
     }
 
-    public function testClose() {
+    public function testClose()
+    {
         $mock = $this->createMock('\Ratchet\Mock\Connection');
         $conn = new WampConnection($mock);
 

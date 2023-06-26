@@ -1,5 +1,7 @@
 <?php
+
 namespace Ratchet;
+
 use React\EventLoop\LoopInterface;
 use React\EventLoop\Factory as LoopFactory;
 use React\Socket\Server as Reactor;
@@ -23,7 +25,8 @@ use Symfony\Component\Routing\Matcher\UrlMatcher;
  * An opinionated facade class to quickly and easily create a WebSocket server.
  * A few configuration assumptions are made and some best-practice security conventions are applied by default.
  */
-class App {
+class App
+{
     /**
      * @var \Symfony\Component\Routing\RouteCollection
      */
@@ -63,7 +66,8 @@ class App {
      * @param LoopInterface $loop       Specific React\EventLoop to bind the application to. null will create one for you.
      * @param array         $context
      */
-    public function __construct($httpHost = 'localhost', $port = 8080, $address = '127.0.0.1', LoopInterface $loop = null, $context = array()) {
+    public function __construct($httpHost = 'localhost', $port = 8080, $address = '127.0.0.1', LoopInterface $loop = null, $context = array())
+    {
         if (extension_loaded('xdebug') && getenv('RATCHET_DISABLE_XDEBUG_WARN') === false) {
             trigger_error('XDebug extension detected. Remember to disable this if performance testing or going live!', E_USER_WARNING);
         }
@@ -77,10 +81,10 @@ class App {
 
         $socket = new Reactor($address . ':' . $port, $loop, $context);
 
-        $this->routes  = new RouteCollection;
-        $this->_server = new IoServer(new HttpServer(new Router(new UrlMatcher($this->routes, new RequestContext))), $socket, $loop);
+        $this->routes  = new RouteCollection();
+        $this->_server = new IoServer(new HttpServer(new Router(new UrlMatcher($this->routes, new RequestContext()))), $socket, $loop);
 
-        $policy = new FlashPolicy;
+        $policy = new FlashPolicy();
         $policy->addAllowedAccess($httpHost, 80);
         $policy->addAllowedAccess($httpHost, $port);
 
@@ -101,7 +105,8 @@ class App {
      * @param string             $httpHost Override the $httpHost variable provided in the __construct
      * @return ComponentInterface|WsServer
      */
-    public function route($path, ComponentInterface $controller, array $allowedOrigins = array(), $httpHost = null) {
+    public function route($path, ComponentInterface $controller, array $allowedOrigins = array(), $httpHost = null)
+    {
         if ($controller instanceof HttpServerInterface || $controller instanceof WsServer) {
             $decorated = $controller;
         } elseif ($controller instanceof WampServerInterface) {
@@ -127,8 +132,8 @@ class App {
         }
 
         //allow origins in flash policy server
-        if(empty($this->flashServer) === false) {
-            foreach($allowedOrigins as $allowedOrgin) {
+        if (empty($this->flashServer) === false) {
+            foreach ($allowedOrigins as $allowedOrgin) {
                 $this->flashServer->app->addAllowedAccess($allowedOrgin, $this->port);
             }
         }
@@ -141,7 +146,8 @@ class App {
     /**
      * Run the server by entering the event loop
      */
-    public function run() {
+    public function run()
+    {
         $this->_server->run();
     }
 }

@@ -2,7 +2,11 @@
 <ruleset name="Ratchet">
     <file>src</file>
     <file>tests</file>
-    <rule ref="PSR1"/>
-    <rule ref="PSR2"/>
+    <rule ref="PSR1">
+        <exclude name="Generic.Files.LineLength"/>
+    </rule>
+    <rule ref="PSR2">
+        <exclude name="PSR2.Classes.PropertyDeclaration.Underscore"/>
+    </rule>
     <rule ref="PSR12"/>
 </ruleset>

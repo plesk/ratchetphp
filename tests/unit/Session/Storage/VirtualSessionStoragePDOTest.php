@@ -1,5 +1,7 @@
 <?php
+
 namespace Ratchet\Session\Storage;
+
 use Ratchet\Session\Serialize\PhpHandler;
 use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBag;
@@ -8,15 +10,17 @@ use Symfony\Component\HttpFoundation\Session\Storage\Handler\PdoSessionHandler;
 /**
  * @covers Ratchet\Session\Storage\VirtualSessionStorage
  */
-class VirtualSessionStoragePDOTest extends \PHPUnit\Framework\TestCase {
+class VirtualSessionStoragePDOTest extends \PHPUnit\Framework\TestCase
+{
     /**
      * @var VirtualSessionStorage
      */
-    protected $_virtualSessionStorage;
+    protected $virtualSessionStorage;
 
-    protected $_pathToDB;
+    protected $pathToDB;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         if (!extension_loaded('PDO') || !extension_loaded('pdo_sqlite')) {
             $this->markTestSkipped('Session test requires PDO and pdo_sqlite');
         }
@@ -29,8 +33,8 @@ CREATE TABLE `sessions` (
     `sess_lifetime` MEDIUMINT NOT NULL
 );
 SQL;
-        $this->_pathToDB = tempnam(sys_get_temp_dir(), 'SQ3');;
-        $dsn = 'sqlite:' . $this->_pathToDB;
+        $this->pathToDB = tempnam(sys_get_temp_dir(), 'SQ3');
+        $dsn = 'sqlite:' . $this->pathToDB;
 
         $pdo = new \PDO($dsn);
         $pdo->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
@@ -39,18 +43,20 @@ SQL;
 
         $sessionHandler = new PdoSessionHandler($dsn);
         $serializer = new PhpHandler();
-        $this->_virtualSessionStorage = new VirtualSessionStorage($sessionHandler, 'foobar', $serializer);
-        $this->_virtualSessionStorage->registerBag(new FlashBag());
-        $this->_virtualSessionStorage->registerBag(new AttributeBag());
+        $this->virtualSessionStorage = new VirtualSessionStorage($sessionHandler, 'foobar', $serializer);
+        $this->virtualSessionStorage->registerBag(new FlashBag());
+        $this->virtualSessionStorage->registerBag(new AttributeBag());
     }
 
-    public function tearDown(): void {
-        unlink($this->_pathToDB);
+    public function tearDown(): void
+    {
+        unlink($this->pathToDB);
     }
 
-    public function testStartWithDSN() {
-        $this->_virtualSessionStorage->start();
+    public function testStartWithDSN()
+    {
+        $this->virtualSessionStorage->start();
 
-        $this->assertTrue($this->_virtualSessionStorage->isStarted());
+        $this->assertTrue($this->virtualSessionStorage->isStarted());
     }
 }

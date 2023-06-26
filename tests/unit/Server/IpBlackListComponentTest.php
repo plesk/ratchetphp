@@ -1,19 +1,23 @@
 <?php
+
 namespace Ratchet\Server;
 
 /**
  * @covers Ratchet\Server\IpBlackList
  */
-class IpBlackListTest extends \PHPUnit\Framework\TestCase {
+class IpBlackListTest extends \PHPUnit\Framework\TestCase
+{
     protected $blocker;
     protected $mock;
 
-    public function setUp(): void {
+    public function setUp(): void
+    {
         $this->mock = $this->createMock('\\Ratchet\\MessageComponentInterface');
         $this->blocker = new IpBlackList($this->mock);
     }
 
-    public function testOnOpen() {
+    public function testOnOpen()
+    {
         $this->mock->expects($this->exactly(3))->method('onOpen');
 
         $conn1 = $this->newConn();
@@ -25,7 +29,8 @@ class IpBlackListTest extends \PHPUnit\Framework\TestCase {
         $this->blocker->onOpen($conn2);
     }
 
-    public function testBlockDoesNotTriggerOnOpen() {
+    public function testBlockDoesNotTriggerOnOpen()
+    {
         $conn = $this->newConn();
 
         $this->blocker->blockAddress($conn->remoteAddress);
@@ -35,7 +40,8 @@ class IpBlackListTest extends \PHPUnit\Framework\TestCase {
         $ret = $this->blocker->onOpen($conn);
     }
 
-    public function testBlockDoesNotTriggerOnClose() {
+    public function testBlockDoesNotTriggerOnClose()
+    {
         $conn = $this->newConn();
 
         $this->blocker->blockAddress($conn->remoteAddress);
@@ -45,7 +51,8 @@ class IpBlackListTest extends \PHPUnit\Framework\TestCase {
         $ret = $this->blocker->onOpen($conn);
     }
 
-    public function testOnMessageDecoration() {
+    public function testOnMessageDecoration()
+    {
         $conn = $this->newConn();
         $msg  = 'Hello not being blocked';
 
@@ -54,7 +61,8 @@ class IpBlackListTest extends \PHPUnit\Framework\TestCase {
         $this->blocker->onMessage($conn, $msg);
     }
 
-    public function testOnCloseDecoration() {
+    public function testOnCloseDecoration()
+    {
         $conn = $this->newConn();
 
         $this->mock->expects($this->once())->method('onClose')->with($conn);
@@ -62,7 +70,8 @@ class IpBlackListTest extends \PHPUnit\Framework\TestCase {
         $this->blocker->onClose($conn);
     }
 
-    public function testBlockClosesConnection() {
+    public function testBlockClosesConnection()
+    {
         $conn = $this->newConn();
         $this->blocker->blockAddress($conn->remoteAddress);
 
@@ -71,7 +80,8 @@ class IpBlackListTest extends \PHPUnit\Framework\TestCase {
         $this->blocker->onOpen($conn);
     }
 
-    public function testAddAndRemoveWithFluentInterfaces() {
+    public function testAddAndRemoveWithFluentInterfaces()
+    {
         $blockOne = '127.0.0.1';
         $blockTwo = '192.168.1.1';
         $unblock  = '75.119.207.140';
@@ -86,7 +96,8 @@ class IpBlackListTest extends \PHPUnit\Framework\TestCase {
         $this->assertEquals(array($blockOne, $blockTwo), $this->blocker->getBlockedAddresses());
     }
 
-    public function testDecoratorPassesErrors() {
+    public function testDecoratorPassesErrors()
+    {
         $conn = $this->newConn();
         $e    = new \Exception('I threw an error');
 
@@ -95,7 +106,8 @@ class IpBlackListTest extends \PHPUnit\Framework\TestCase {
         $this->blocker->onError($conn, $e);
     }
 
-    public function addressProvider() {
+    public function addressProvider()
+    {
         return array(
             array('127.0.0.1', '127.0.0.1')
           , array('localhost', 'localhost')
@@ -107,15 +119,18 @@ class IpBlackListTest extends \PHPUnit\Framework\TestCase {
     /**
      * @dataProvider addressProvider
      */
-    public function testFilterAddress($expected, $input) {
+    public function testFilterAddress($expected, $input)
+    {
         $this->assertEquals($expected, $this->blocker->filterAddress($input));
     }
 
-    public function testUnblockingSilentlyFails() {
+    public function testUnblockingSilentlyFails()
+    {
         $this->assertInstanceOf('\\Ratchet\\Server\\IpBlackList', $this->blocker->unblockAddress('localhost'));
     }
 
-    protected function newConn() {
+    protected function newConn()
+    {
         $conn = $this->createMock('\Ratchet\Mock\Connection');
         $conn->remoteAddress = '127.0.0.1';
 

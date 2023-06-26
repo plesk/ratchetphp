@@ -1,5 +1,7 @@
 <?php
+
 namespace Ratchet\Wamp;
+
 use Ratchet\ConnectionInterface;
 use Ratchet\AbstractConnectionDecorator;
 use Ratchet\Wamp\ServerProtocol as WAMP;
@@ -9,14 +11,16 @@ use Ratchet\Wamp\ServerProtocol as WAMP;
  * representing a client. Methods on this Connection are therefore different.
  * @property \stdClass $WAMP
  */
-class WampConnection extends AbstractConnectionDecorator {
+class WampConnection extends AbstractConnectionDecorator
+{
     /**
      * {@inheritdoc}
      */
-    public function __construct(ConnectionInterface $conn) {
+    public function __construct(ConnectionInterface $conn)
+    {
         parent::__construct($conn);
 
-        $this->WAMP            = new \StdClass;
+        $this->WAMP            = new \StdClass();
         $this->WAMP->sessionId = str_replace('.', '', uniqid(mt_rand(), true));
         $this->WAMP->prefixes  = array();
 
@@ -29,7 +33,8 @@ class WampConnection extends AbstractConnectionDecorator {
      * @param array $data an object or array
      * @return WampConnection
      */
-    public function callResult($id, $data = array()) {
+    public function callResult($id, $data = array())
+    {
         return $this->send(json_encode(array(WAMP::MSG_CALL_RESULT, $id, $data)));
     }
 
@@ -41,7 +46,8 @@ class WampConnection extends AbstractConnectionDecorator {
      * @param string $details An optional human readable detail message to send back
      * @return WampConnection
      */
-    public function callError($id, $errorUri, $desc = '', $details = null) {
+    public function callError($id, $errorUri, $desc = '', $details = null)
+    {
         if ($errorUri instanceof Topic) {
             $errorUri = (string)$errorUri;
         }
@@ -60,7 +66,8 @@ class WampConnection extends AbstractConnectionDecorator {
      * @param mixed  $msg   Data to send with the event.  Anything that is json'able
      * @return WampConnection
      */
-    public function event($topic, $msg) {
+    public function event($topic, $msg)
+    {
         return $this->send(json_encode(array(WAMP::MSG_EVENT, (string)$topic, $msg)));
     }
 
@@ -69,7 +76,8 @@ class WampConnection extends AbstractConnectionDecorator {
      * @param string $uri
      * @return WampConnection
      */
-    public function prefix($curie, $uri) {
+    public function prefix($curie, $uri)
+    {
         $this->WAMP->prefixes[$curie] = (string)$uri;
 
         return $this->send(json_encode(array(WAMP::MSG_PREFIX, $curie, (string)$uri)));
@@ -80,15 +88,16 @@ class WampConnection extends AbstractConnectionDecorator {
      * @param string $uri
      * @return string
      */
-    public function getUri($uri) {
+    public function getUri($uri)
+    {
         $curieSeperator = ':';
 
         if (preg_match('/http(s*)\:\/\//', $uri) == false) {
             if (strpos($uri, $curieSeperator) !== false) {
                 list($prefix, $action) = explode($curieSeperator, $uri);
                 
-                if(isset($this->WAMP->prefixes[$prefix]) === true){
-                  return $this->WAMP->prefixes[$prefix] . '#' . $action;
+                if (isset($this->WAMP->prefixes[$prefix]) === true) {
+                    return $this->WAMP->prefixes[$prefix] . '#' . $action;
                 }
             }
         }
@@ -99,7 +108,8 @@ class WampConnection extends AbstractConnectionDecorator {
     /**
      * @internal
      */
-    public function send($data) {
+    public function send($data)
+    {
         $this->getConnection()->send($data);
 
         return $this;
@@ -108,8 +118,8 @@ class WampConnection extends AbstractConnectionDecorator {
     /**
      * {@inheritdoc}
      */
-    public function close($opt = null) {
+    public function close($opt = null)
+    {
         $this->getConnection()->close($opt);
     }
-
 }

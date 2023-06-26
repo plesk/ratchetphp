@@ -1,28 +1,33 @@
 <?php
+
 namespace Ratchet\Server;
 
 /**
  * @covers Ratchet\Server\EchoServer
  */
-class EchoServerTest extends \PHPUnit\Framework\TestCase {
-    protected $_conn;
-    protected $_comp;
+class EchoServerTest extends \PHPUnit\Framework\TestCase
+{
+    protected $conn;
+    protected $comp;
 
-    public function setUp(): void {
-        $this->_conn = $this->createMock('\Ratchet\ConnectionInterface');
-        $this->_comp = new EchoServer;
+    public function setUp(): void
+    {
+        $this->conn = $this->createMock('\Ratchet\ConnectionInterface');
+        $this->comp = new EchoServer();
     }
 
-    public function testMessageEchod() {
+    public function testMessageEchod()
+    {
         $message = 'Tillsonburg, my back still aches when I hear that word.';
-        $this->_conn->expects($this->once())->method('send')->with($message);
-        $this->_comp->onMessage($this->_conn, $message);
+        $this->conn->expects($this->once())->method('send')->with($message);
+        $this->comp->onMessage($this->conn, $message);
     }
 
-    public function testErrorClosesConnection() {
+    public function testErrorClosesConnection()
+    {
         ob_start();
-        $this->_conn->expects($this->once())->method('close');
-        $this->_comp->onError($this->_conn, new \Exception);
+        $this->conn->expects($this->once())->method('close');
+        $this->comp->onError($this->conn, new \Exception());
         ob_end_clean();
     }
 }

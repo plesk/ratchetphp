@@ -1,5 +1,7 @@
 <?php
+
 namespace Ratchet\Wamp;
+
 use Ratchet\Mock\Connection;
 use Ratchet\Mock\WampComponent as TestComponent;
 
@@ -8,45 +10,51 @@ use Ratchet\Mock\WampComponent as TestComponent;
  * @covers \Ratchet\Wamp\WampServerInterface
  * @covers \Ratchet\Wamp\WampConnection
  */
-class ServerProtocolTest extends \PHPUnit\Framework\TestCase {
-    protected $_comp;
+class ServerProtocolTest extends \PHPUnit\Framework\TestCase
+{
+    protected $comp;
 
-    protected $_app;
+    protected $app;
 
-    public function setUp(): void {
-        $this->_app  = new TestComponent;
-        $this->_comp = new ServerProtocol($this->_app);
+    public function setUp(): void
+    {
+        $this->app = new TestComponent();
+        $this->comp = new ServerProtocol($this->app);
     }
 
-    protected function newConn() {
-        return new Connection;
+    protected function newConn()
+    {
+        return new Connection();
     }
 
-    public function invalidMessageProvider() {
+    public function invalidMessageProvider()
+    {
         return [
-            [0]
-          , [3]
-          , [4]
-          , [8]
-          , [9]
+            [0],
+            [3],
+            [4],
+            [8],
+            [9],
         ];
     }
 
     /**
      * @dataProvider invalidMessageProvider
      */
-    public function testInvalidMessages($type) {
+    public function testInvalidMessages($type)
+    {
         $this->expectException('\Ratchet\Wamp\Exception');
 
         $conn = $this->newConn();
-        $this->_comp->onOpen($conn);
-        $this->_comp->onMessage($conn, json_encode([$type]));
+        $this->comp->onOpen($conn);
+        $this->comp->onMessage($conn, json_encode([$type]));
     }
 
-    public function testWelcomeMessage() {
+    public function testWelcomeMessage()
+    {
         $conn = $this->newConn();
 
-        $this->_comp->onOpen($conn);
+        $this->comp->onOpen($conn);
 
         $message = $conn->last['send'];
         $json    = json_decode($message);
@@ -57,31 +65,34 @@ class ServerProtocolTest extends \PHPUnit\Framework\TestCase {
         $this->assertEquals(1, $json[2]);
     }
 
-    public function testSubscribe() {
+    public function testSubscribe()
+    {
         $uri = 'http://example.com';
         $clientMessage = array(5, $uri);
 
         $conn = $this->newConn();
 
-        $this->_comp->onOpen($conn);
-        $this->_comp->onMessage($conn, json_encode($clientMessage));
+        $this->comp->onOpen($conn);
+        $this->comp->onMessage($conn, json_encode($clientMessage));
 
-        $this->assertEquals($uri, $this->_app->last['onSubscribe'][1]);
+        $this->assertEquals($uri, $this->app->last['onSubscribe'][1]);
     }
 
-    public function testUnSubscribe() {
+    public function testUnSubscribe()
+    {
         $uri = 'http://example.com/endpoint';
         $clientMessage = array(6, $uri);
 
         $conn = $this->newConn();
 
-        $this->_comp->onOpen($conn);
-        $this->_comp->onMessage($conn, json_encode($clientMessage));
+        $this->comp->onOpen($conn);
+        $this->comp->onMessage($conn, json_encode($clientMessage));
 
-        $this->assertEquals($uri, $this->_app->last['onUnSubscribe'][1]);
+        $this->assertEquals($uri, $this->app->last['onUnSubscribe'][1]);
     }
 
-    public function callProvider() {
+    public function callProvider()
+    {
         return [
             [2, 'a', 'b']
           , [2, ['a', 'b']]
@@ -97,7 +108,8 @@ class ServerProtocolTest extends \PHPUnit\Framework\TestCase {
     /**
      * @dataProvider callProvider
      */
-    public function testCall() {
+    public function testCall()
+    {
         $args     = func_get_args();
         $paramNum = array_shift($args);
 
@@ -107,16 +119,17 @@ class ServerProtocolTest extends \PHPUnit\Framework\TestCase {
 
         $conn = $this->newConn();
 
-        $this->_comp->onOpen($conn);
-        $this->_comp->onMessage($conn, json_encode($clientMessage));
+        $this->comp->onOpen($conn);
+        $this->comp->onMessage($conn, json_encode($clientMessage));
 
-        $this->assertEquals($id,  $this->_app->last['onCall'][1]);
-        $this->assertEquals($uri, $this->_app->last['onCall'][2]);
+        $this->assertEquals($id, $this->app->last['onCall'][1]);
+        $this->assertEquals($uri, $this->app->last['onCall'][2]);
 
-        $this->assertEquals($paramNum, count($this->_app->last['onCall'][3]));
+        $this->assertEquals($paramNum, count($this->app->last['onCall'][3]));
     }
 
-    public function testPublish() {
+    public function testPublish()
+    {
         $conn = $this->newConn();
 
         $topic = 'pubsubhubbub';
@@ -124,38 +137,41 @@ class ServerProtocolTest extends \PHPUnit\Framework\TestCase {
 
         $clientMessage = array(7, $topic, $event);
 
-        $this->_comp->onOpen($conn);
-        $this->_comp->onMessage($conn, json_encode($clientMessage));
+        $this->comp->onOpen($conn);
+        $this->comp->onMessage($conn, json_encode($clientMessage));
 
-        $this->assertEquals($topic, $this->_app->last['onPublish'][1]);
-        $this->assertEquals($event, $this->_app->last['onPublish'][2]);
-        $this->assertEquals(array(), $this->_app->last['onPublish'][3]);
-        $this->assertEquals(array(), $this->_app->last['onPublish'][4]);
+        $this->assertEquals($topic, $this->app->last['onPublish'][1]);
+        $this->assertEquals($event, $this->app->last['onPublish'][2]);
+        $this->assertEquals(array(), $this->app->last['onPublish'][3]);
+        $this->assertEquals(array(), $this->app->last['onPublish'][4]);
     }
 
-    public function testPublishAndExcludeMe() {
+    public function testPublishAndExcludeMe()
+    {
         $conn = $this->newConn();
 
-        $this->_comp->onOpen($conn);
-        $this->_comp->onMessage($conn, json_encode(array(7, 'topic', 'event', true)));
+        $this->comp->onOpen($conn);
+        $this->comp->onMessage($conn, json_encode(array(7, 'topic', 'event', true)));
 
-        $this->assertEquals($conn->WAMP->sessionId, $this->_app->last['onPublish'][3][0]);
+        $this->assertEquals($conn->WAMP->sessionId, $this->app->last['onPublish'][3][0]);
     }
 
-    public function testPublishAndEligible() {
+    public function testPublishAndEligible()
+    {
         $conn = $this->newConn();
 
         $buddy  = uniqid('', false);
         $friend = uniqid('', false);
 
-        $this->_comp->onOpen($conn);
-        $this->_comp->onMessage($conn, json_encode(array(7, 'topic', 'event', false, array($buddy, $friend))));
+        $this->comp->onOpen($conn);
+        $this->comp->onMessage($conn, json_encode(array(7, 'topic', 'event', false, array($buddy, $friend))));
 
-        $this->assertEquals(array(), $this->_app->last['onPublish'][3]);
-        $this->assertEquals(2, count($this->_app->last['onPublish'][4]));
+        $this->assertEquals(array(), $this->app->last['onPublish'][3]);
+        $this->assertEquals(2, count($this->app->last['onPublish'][4]));
     }
 
-    public function eventProvider() {
+    public function eventProvider()
+    {
         return array(
             array('http://example.com', array('one', 'two'))
           , array('curie', array(array('hello' => 'world', 'herp' => 'derp')))
@@ -165,7 +181,8 @@ class ServerProtocolTest extends \PHPUnit\Framework\TestCase {
     /**
      * @dataProvider eventProvider
      */
-    public function testEvent($topic, $payload) {
+    public function testEvent($topic, $payload)
+    {
         $conn = new WampConnection($this->newConn());
         $conn->event($topic, $payload);
 
@@ -174,80 +191,88 @@ class ServerProtocolTest extends \PHPUnit\Framework\TestCase {
         $this->assertSame(array(8, $topic, $payload), json_decode($eventString, true));
     }
 
-    public function testOnClosePropagation() {
-        $conn = new Connection;
+    public function testOnClosePropagation()
+    {
+        $conn = new Connection();
 
-        $this->_comp->onOpen($conn);
-        $this->_comp->onClose($conn);
+        $this->comp->onOpen($conn);
+        $this->comp->onClose($conn);
 
         $class  = new \ReflectionClass('\\Ratchet\\Wamp\\WampConnection');
         $method = $class->getMethod('getConnection');
         $method->setAccessible(true);
 
-        $check = $method->invokeArgs($this->_app->last['onClose'][0], array());
+        $check = $method->invokeArgs($this->app->last['onClose'][0], array());
 
         $this->assertSame($conn, $check);
     }
 
-    public function testOnErrorPropagation() {
-        $conn = new Connection;
+    public function testOnErrorPropagation()
+    {
+        $conn = new Connection();
 
         $e = new \Exception('Nope');
 
-        $this->_comp->onOpen($conn);
-        $this->_comp->onError($conn, $e);
+        $this->comp->onOpen($conn);
+        $this->comp->onError($conn, $e);
 
         $class  = new \ReflectionClass('\\Ratchet\\Wamp\\WampConnection');
         $method = $class->getMethod('getConnection');
         $method->setAccessible(true);
 
-        $check = $method->invokeArgs($this->_app->last['onError'][0], array());
+        $check = $method->invokeArgs($this->app->last['onError'][0], array());
 
         $this->assertSame($conn, $check);
-        $this->assertSame($e, $this->_app->last['onError'][1]);
+        $this->assertSame($e, $this->app->last['onError'][1]);
     }
 
-    public function testPrefix() {
+    public function testPrefix()
+    {
         $conn = new WampConnection($this->newConn());
-        $this->_comp->onOpen($conn);
+        $this->comp->onOpen($conn);
 
         $prefix  = 'incoming';
         $fullURI   = "http://example.com/$prefix";
         $method = 'call';
 
-        $this->_comp->onMessage($conn, json_encode(array(1, $prefix, $fullURI)));
+        $this->comp->onMessage($conn, json_encode(array(1, $prefix, $fullURI)));
 
         $this->assertEquals($fullURI, $conn->WAMP->prefixes[$prefix]);
         $this->assertEquals("$fullURI#$method", $conn->getUri("$prefix:$method"));
     }
 
-    public function testMessageMustBeJson() {
+    public function testMessageMustBeJson()
+    {
         $this->expectException('\\Ratchet\\Wamp\\JsonException');
 
-        $conn = new Connection;
+        $conn = new Connection();
 
-        $this->_comp->onOpen($conn);
-        $this->_comp->onMessage($conn, 'Hello World!');
+        $this->comp->onOpen($conn);
+        $this->comp->onMessage($conn, 'Hello World!');
     }
 
-    public function testGetSubProtocolsReturnsArray() {
-        $this->assertTrue(is_array($this->_comp->getSubProtocols()));
+    public function testGetSubProtocolsReturnsArray()
+    {
+        $this->assertTrue(is_array($this->comp->getSubProtocols()));
     }
 
-    public function testGetSubProtocolsGetFromApp() {
-        $this->_app->protocols = array('hello', 'world');
+    public function testGetSubProtocolsGetFromApp()
+    {
+        $this->app->protocols = array('hello', 'world');
 
-        $this->assertGreaterThanOrEqual(3, count($this->_comp->getSubProtocols()));
+        $this->assertGreaterThanOrEqual(3, count($this->comp->getSubProtocols()));
     }
 
-    public function testWampOnMessageApp() {
+    public function testWampOnMessageApp()
+    {
         $app = $this->createMock('\\Ratchet\\Wamp\\WampServerInterface');
         $wamp = new ServerProtocol($app);
 
         $this->assertContains('wamp', $wamp->getSubProtocols());
     }
 
-    public function badFormatProvider() {
+    public function badFormatProvider()
+    {
         return array(
             array(json_encode(true))
           , array('{"valid":"json", "invalid": "message"}')
@@ -258,38 +283,42 @@ class ServerProtocolTest extends \PHPUnit\Framework\TestCase {
     /**
      * @dataProvider badFormatProvider
      */
-    public function testValidJsonButInvalidProtocol($message) {
+    public function testValidJsonButInvalidProtocol($message)
+    {
         $this->expectException('\Ratchet\Wamp\Exception');
 
         $conn = $this->newConn();
-        $this->_comp->onOpen($conn);
-        $this->_comp->onMessage($conn, $message);
+        $this->comp->onOpen($conn);
+        $this->comp->onMessage($conn, $message);
     }
 
-    public function testBadClientInputFromNonStringTopic() {
+    public function testBadClientInputFromNonStringTopic()
+    {
         $this->expectException('\Ratchet\Wamp\Exception');
 
         $conn = new WampConnection($this->newConn());
-        $this->_comp->onOpen($conn);
+        $this->comp->onOpen($conn);
 
-        $this->_comp->onMessage($conn, json_encode([5, ['hells', 'nope']]));
+        $this->comp->onMessage($conn, json_encode([5, ['hells', 'nope']]));
     }
 
-    public function testBadPrefixWithNonStringTopic() {
+    public function testBadPrefixWithNonStringTopic()
+    {
         $this->expectException('\Ratchet\Wamp\Exception');
 
         $conn = new WampConnection($this->newConn());
-        $this->_comp->onOpen($conn);
+        $this->comp->onOpen($conn);
 
-        $this->_comp->onMessage($conn, json_encode([1, ['hells', 'nope'], ['bad', 'input']]));
+        $this->comp->onMessage($conn, json_encode([1, ['hells', 'nope'], ['bad', 'input']]));
     }
 
-    public function testBadPublishWithNonStringTopic() {
+    public function testBadPublishWithNonStringTopic()
+    {
         $this->expectException('\Ratchet\Wamp\Exception');
 
         $conn = new WampConnection($this->newConn());
-        $this->_comp->onOpen($conn);
+        $this->comp->onOpen($conn);
 
-        $this->_comp->onMessage($conn, json_encode([7, ['bad', 'input'], 'Hider']));
+        $this->comp->onMessage($conn, json_encode([7, ['bad', 'input'], 'Hider']));
     }
 }
