@@ -28,11 +28,19 @@ class RouterTest extends \PHPUnit\Framework\TestCase
             ->expects($this->any())
             ->method('getQuery')
             ->will($this->returnValue('foo=bar&baz=qux'));
+        $this->uri
+            ->expects($this->any())
+            ->method('getHost')
+            ->will($this->returnValue('localhost'));
         $this->req = $this->createMock('\Psr\Http\Message\RequestInterface');
         $this->req
             ->expects($this->any())
             ->method('getUri')
             ->will($this->returnValue($this->uri));
+        $this->req
+            ->expects($this->any())
+            ->method('getMethod')
+            ->will($this->returnValue('GET'));
         $this->matcher = $this->createMock('Symfony\Component\Routing\Matcher\UrlMatcherInterface');
         $this->matcher
             ->expects($this->any())
@@ -154,6 +162,7 @@ class RouterTest extends \PHPUnit\Framework\TestCase
 
             return true;
         }))->will($this->returnSelf());
+        $request->expects($this->any())->method('getMethod')->will($this->returnValue('GET'));
 
         $router = new Router($this->matcher);
         $router->onOpen($conn, $request);
