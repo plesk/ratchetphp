@@ -8,6 +8,9 @@ CHANGELOG
 
 ---
 
+* 1.0.2 (2023-07-05)
+  * BF: Fix PHP Deprecated Construction warning
+
 * 1.0.1 (2023-06-30)
   * BF: Add compatibility with psr/http-message >= 1.0
 

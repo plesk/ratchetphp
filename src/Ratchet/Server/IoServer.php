@@ -93,7 +93,7 @@ class IoServer
         $this->decors[spl_object_hash($conn)] = $decor;
         $decor->resourceId = (int)$conn->stream;
 
-        $uri = $conn->getRemoteAddress();
+        $uri = (string)$conn->getRemoteAddress();
         $decor->remoteAddress = trim(
             parse_url((strpos($uri, '://') === false ? 'tcp://' : '') . $uri, PHP_URL_HOST),
             '[]'
