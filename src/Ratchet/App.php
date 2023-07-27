@@ -9,7 +9,6 @@ use Ratchet\Http\HttpServerInterface;
 use Ratchet\Http\OriginCheck;
 use Ratchet\Wamp\WampServerInterface;
 use Ratchet\Server\IoServer;
-use Ratchet\Server\FlashPolicy;
 use Ratchet\Http\HttpServer;
 use Ratchet\Http\Router;
 use Ratchet\WebSocket\MessageComponentInterface as WsMessageComponentInterface;
@@ -30,11 +29,6 @@ class App
      * @var \Symfony\Component\Routing\RouteCollection
      */
     public $routes;
-
-    /**
-     * @var \Ratchet\Server\IoServer
-     */
-    public $flashServer;
 
     /**
      * @var \Ratchet\Server\IoServer
@@ -60,7 +54,7 @@ class App
 
     /**
      * @param string        $httpHost   HTTP hostname clients intend to connect to. MUST match JS `new WebSocket('ws://$httpHost');`
-     * @param int           $port       Port to listen on. If 80, assuming production, Flash on 843 otherwise expecting Flash to be proxied through 8843
+     * @param int           $port       Port to listen on.
      * @param string        $address    IP address to bind to. Default is localhost/proxy only. '0.0.0.0' for any machine.
      * @param LoopInterface $loop       Specific React\EventLoop to bind the application to. null will create one for you.
      * @param array         $context
@@ -82,18 +76,6 @@ class App
 
         $this->routes  = new RouteCollection();
         $this->_server = new IoServer(new HttpServer(new Router(new UrlMatcher($this->routes, new RequestContext()))), $socket, $loop);
-
-        $policy = new FlashPolicy();
-        $policy->addAllowedAccess($httpHost, 80);
-        $policy->addAllowedAccess($httpHost, $port);
-
-        if (80 == $port) {
-            $flashUri = '0.0.0.0:843';
-        } else {
-            $flashUri = 8843;
-        }
-        $flashSock = new Reactor($flashUri, $loop);
-        $this->flashServer = new IoServer($policy, $flashSock);
     }
 
     /**
@@ -128,13 +110,6 @@ class App
         }
         if ('*' !== $allowedOrigins[0]) {
             $decorated = new OriginCheck($decorated, $allowedOrigins);
-        }
-
-        //allow origins in flash policy server
-        if (empty($this->flashServer) === false) {
-            foreach ($allowedOrigins as $allowedOrgin) {
-                $this->flashServer->app->addAllowedAccess($allowedOrgin, $this->port);
-            }
         }
 
         $this->routes->add('rr-' . ++$this->_routeCounter, new Route($path, array('_controller' => $decorated), array('Origin' => $this->httpHost), array(), $httpHost, array(), array('GET')));
