@@ -64,11 +64,14 @@ class WsServer implements HttpServerInterface
      */
     private $msgCb;
 
+    private $maxMessagePayloadSize;
+    private $maxFramePayloadSize;
+
     /**
      * @param \Ratchet\WebSocket\MessageComponentInterface|\Ratchet\MessageComponentInterface $component Your application to run with WebSockets
      * @note If you want to enable sub-protocols have your component implement WsServerInterface as well
      */
-    public function __construct(ComponentInterface $component)
+    public function __construct(ComponentInterface $component, $maxMessagePayloadSize = null, $maxFramePayloadSize = null)
     {
         if ($component instanceof MessageComponentInterface) {
             $this->msgCb = function (ConnectionInterface $conn, MessageInterface $msg) {
@@ -104,6 +107,9 @@ class WsServer implements HttpServerInterface
         $this->ueFlowFactory = function () use ($reusableUnderflowException) {
             return $reusableUnderflowException;
         };
+
+        $this->maxMessagePayloadSize = $maxMessagePayloadSize;
+        $this->maxFramePayloadSize = $maxFramePayloadSize;
     }
 
     /**
@@ -140,7 +146,9 @@ class WsServer implements HttpServerInterface
                 $this->onControlFrame($frame, $wsConn);
             },
             true,
-            $this->ueFlowFactory
+            $this->ueFlowFactory,
+            $this->maxMessagePayloadSize,
+            $this->maxFramePayloadSize
         );
 
         $this->connections->attach($conn, new ConnContext($wsConn, $streamer));
