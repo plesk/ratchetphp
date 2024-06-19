@@ -42,7 +42,7 @@ class PhpHandler implements HandlerInterface
             $num     = $pos - $offset;
             $varname = substr($raw, $offset, $num);
             $offset += $num + 1;
-            $data    = unserialize(substr($raw, $offset));
+            $data    = @unserialize(substr($raw, $offset));
 
             $returnData[$varname] = $data;
             $offset += strlen(serialize($data));
