@@ -47,7 +47,7 @@ class SessionProvider implements HttpServerInterface
      * @param \Ratchet\Session\Serialize\HandlerInterface $serializer
      * @throws \RuntimeException
      */
-    public function __construct(HttpServerInterface $app, \SessionHandlerInterface $handler, array $options = array(), HandlerInterface $serializer = null)
+    public function __construct(HttpServerInterface $app, \SessionHandlerInterface $handler, array $options = array(), ?HandlerInterface $serializer = null)
     {
         $this->_app     = $app;
         $this->_handler = $handler;
@@ -76,7 +76,7 @@ class SessionProvider implements HttpServerInterface
     /**
      * {@inheritdoc}
      */
-    public function onOpen(ConnectionInterface $conn, RequestInterface $request = null)
+    public function onOpen(ConnectionInterface $conn, ?RequestInterface $request = null)
     {
         $sessionName = ini_get('session.name');
 

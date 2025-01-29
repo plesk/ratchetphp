@@ -12,7 +12,7 @@ class Component implements MessageComponentInterface, WsServerInterface
 
     public $protocols = [];
 
-    public function __construct(ComponentInterface $app = null)
+    public function __construct(?ComponentInterface $app = null)
     {
         $this->last[__FUNCTION__] = func_get_args();
     }
