@@ -7,7 +7,7 @@ use Psr\Http\Message\RequestInterface;
 
 class NoOpHttpServerController implements HttpServerInterface
 {
-    public function onOpen(ConnectionInterface $conn, RequestInterface $request = null)
+    public function onOpen(ConnectionInterface $conn, ?RequestInterface $request = null)
     {
     }
 
