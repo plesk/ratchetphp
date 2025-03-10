@@ -2,6 +2,8 @@
 
 namespace Ratchet\WebSocket;
 
+use Nyholm\Psr7\Factory\Psr17Factory;
+use Psr\Http\Message\ResponseFactoryInterface;
 use Ratchet\ComponentInterface;
 use Ratchet\ConnectionInterface;
 use Ratchet\MessageComponentInterface as DataComponentInterface;
@@ -71,7 +73,12 @@ class WsServer implements HttpServerInterface
      * @param \Ratchet\WebSocket\MessageComponentInterface|\Ratchet\MessageComponentInterface $component Your application to run with WebSockets
      * @note If you want to enable sub-protocols have your component implement WsServerInterface as well
      */
-    public function __construct(ComponentInterface $component, $maxMessagePayloadSize = null, $maxFramePayloadSize = null)
+    public function __construct(
+        ComponentInterface $component,
+        $maxMessagePayloadSize = null,
+        $maxFramePayloadSize = null,
+        ?ResponseFactoryInterface $responseFactory = null,
+    )
     {
         if ($component instanceof MessageComponentInterface) {
             $this->msgCb = function (ConnectionInterface $conn, MessageInterface $msg) {
@@ -93,7 +100,7 @@ class WsServer implements HttpServerInterface
         $this->connections = new \SplObjectStorage();
 
         $this->closeFrameChecker   = new CloseFrameChecker();
-        $this->handshakeNegotiator = new ServerNegotiator(new RequestVerifier());
+        $this->handshakeNegotiator = new ServerNegotiator(new RequestVerifier(), $responseFactory ?? new Psr17Factory());
         $this->handshakeNegotiator->setStrictSubProtocolCheck(true);
 
         if ($component instanceof WsServerInterface) {
